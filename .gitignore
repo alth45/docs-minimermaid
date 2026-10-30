@@ -1,0 +1,119 @@
+# =========================================================
+# MiniMermaid Docs — .gitignore
+# Vue 3 + Vite documentation site
+# =========================================================
+
+# =========================================================
+# DEPENDENCIES
+# =========================================================
+node_modules/
+.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+.pnpm-store/
+
+# =========================================================
+# BUILD OUTPUT
+# =========================================================
+dist/
+dist-ssr/
+*.local
+build/
+.vite/
+.vite-cache/
+
+# =========================================================
+# VITE / VUE CACHE
+# =========================================================
+.vuepress/
+node_modules/.vite/
+node_modules/.cache/
+.cache/
+
+# =========================================================
+# ENVIRONMENT VARIABLES
+# =========================================================
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# =========================================================
+# LOGS
+# =========================================================
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+*.log.*
+
+# =========================================================
+# TESTING & COVERAGE
+# =========================================================
+coverage/
+.nyc_output/
+.vitest-cache/
+.vitest/
+*.lcov
+
+# =========================================================
+# TYPESCRIPT
+# =========================================================
+*.tsbuildinfo
+vite-env.d.ts.bak
+
+# =========================================================
+# EDITOR DIRECTORIES & FILES
+# =========================================================
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json.example
+!.vscode/launch.json.example
+.idea/
+*.swp
+*.swo
+*~
+.sublime-workspace
+.sublime-project
+
+# =========================================================
+# OS FILES
+# =========================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+*.stackdump
+
+# =========================================================
+# VERCEl / NETLIFY / DEPLOY
+# =========================================================
+.vercel
+.netlify
+.netlify.toml.bak
+.deploy*/
+.surge/
+
+# =========================================================
+# MISC
+# =========================================================
+*.bak
+*.tmp
+*.temp
+.eslintcache
+.stylelintcache
+.turbo/
+.cache-loader/
