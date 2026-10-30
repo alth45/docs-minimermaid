@@ -6,8 +6,8 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      // Arahkan ke source code library utama agar hot-reload saat diedit
-      'minimermaid': resolve(__dirname, '../src/lib.ts'),
+      // ← UBAH: dari '../src/lib.ts' ke folder vendor lokal
+      'minimermaid': resolve(__dirname, 'vendor/minimermaid/lib.ts'),
     },
   },
 });
