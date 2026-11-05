@@ -7,7 +7,21 @@
     </p>
 
     <!-- =========================================================
-         0. QUICK REFERENCE
+         ATURAN KETAT (Dari Feedback)
+         ========================================================= -->
+    <div class="alert alert-warning">
+      <h3>⚠️ Aturan Sintaks Ketat</h3>
+      <p>Agar parser tidak error, patuhi 4 aturan wajib ini:</p>
+      <ul>
+        <li><strong>Satu Node = Satu Baris Penuh:</strong> Semua atribut (<code>-&gt;icon</code>, <code>-&gt;text</code>, <code>-&gt;tooltip</code>) harus berada di baris yang sama dengan <code>-&gt;[bentuk]</code>.</li>
+        <li><strong>Indentasi Konsisten:</strong> Gunakan spasi yang sama (misal 2 spasi) untuk setiap level.</li>
+        <li><strong>Token Ujung:</strong> Node terakhir di sebuah jalur <strong>tidak boleh</strong> diakhiri dengan <code>-&gt;node</code> atau <code>-- label --&gt;</code>.</li>
+        <li><strong>Cabang Valid:</strong> <code>[cabang]</code> wajib memiliki minimal satu sisi <code>-&gt;ya</code> dan satu sisi <code>-&gt;tidak</code>.</li>
+      </ul>
+    </div>
+
+    <!-- =========================================================
+         QUICK REFERENCE
          ========================================================= -->
     <div class="quick-ref">
       <div class="qr-item">
@@ -20,19 +34,19 @@
       </div>
       <div class="qr-item">
         <code>-&gt;node</code>
-        <span>Sambung ke node berikutnya</span>
+        <span>Sambung ke bawah</span>
       </div>
       <div class="qr-item">
         <code>-- label --&gt;</code>
-        <span>Sambung dengan label panah</span>
+        <span>Sambung berlabel</span>
       </div>
       <div class="qr-item">
-        <code>[cabang]</code>
-        <span>Percabangan ya/tidak</span>
+        <code>-&gt;id["..."]</code>
+        <span>Beri ID unik</span>
       </div>
       <div class="qr-item">
-        <code>[horizontal]</code>
-        <span>Arah kiri-ke-kanan</span>
+        <code>-&gt;goto["..."]</code>
+        <span>Lompat ke ID (Graf)</span>
       </div>
     </div>
 
@@ -48,59 +62,50 @@
     <CodeBlock language="mermaid" :code="basicSyntax" />
     <LiveDiagram :code="basicSyntax" />
 
-    <!-- =========================================================
-         2. SHAPES REFERENCE
-         ========================================================= -->
-    <h2>2. Referensi Bentuk</h2>
-    <p>
-      10 bentuk didukung. Semua bentuk memiliki alias bahasa Indonesia untuk kenyamanan.
-    </p>
-
-    <table>
-      <thead>
-        <tr>
-          <th>Bentuk</th>
-          <th>Alias (Inggris)</th>
-          <th>Alias (Indonesia)</th>
-          <th>Penggunaan Umum</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="s in shapes" :key="s.name">
-          <td><code>{{ s.name }}</code></td>
-          <td>{{ s.aliasEn || '—' }}</td>
-          <td>{{ s.aliasId || '—' }}</td>
-          <td class="muted">{{ s.use }}</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <p>
-      <strong>Tip:</strong> tambahkan warna langsung di bracket —
-      <code>[round:green]</code>, <code>[diamond:#ff5722]</code>, atau
-      <code>[square:red]</code>.
-    </p>
+    <div class="tip">
+      <strong>Salah (Atribut terpisah):</strong> Menaruh <code>-&gt;tooltip</code> di baris baru akan memicu error.
+      <pre><code>->[round]->text["Mulai"]
+  ->tooltip["Ini salah"]</code></pre>
+    </div>
 
     <!-- =========================================================
-         3. PERCABANGAN
+         2. PERCABANGAN FLEKSIBEL (NEW)
          ========================================================= -->
-    <h2>3. Percabangan (Wajib <code>[cabang]</code>)</h2>
+    <h2>
+      2. Percabangan Fleksibel
+      <span class="badge badge-new">NEW</span>
+    </h2>
     <p>
-      Gunakan <code>[cabang]</code> diikuti indentasi untuk membuat dua sisi
-      <code>-&gt;ya</code> dan <code>-&gt;tidak</code>. Semua sub-node di bawah salah satu sisi
-      harus lebih dalam indentasinya.
+      Gunakan <code>[cabang]</code> diikuti indentasi untuk membuat sisi. Anda tidak lagi terbatas pada 
+      <code>-&gt;ya</code> dan <code>-&gt;tidak</code>. Anda bisa menggunakan kata kunci bebas untuk N-cabang.
     </p>
 
     <CodeBlock language="mermaid" :code="nestedSyntax" />
     <LiveDiagram :code="nestedSyntax" />
 
     <!-- =========================================================
-         4. EDGE LABEL (NEW — Batch 2A)
+         3. GRAF: ID & GOTO (NEW)
          ========================================================= -->
     <h2>
-      4. Label pada Panah
+      3. Graf: ID &amp; Goto (Menyatukan Alur)
       <span class="badge badge-new">NEW</span>
     </h2>
+    <p>
+      Secara default, MiniMermaid membuat diagram berbentuk pohon (tree). Untuk menyatukan alur
+      (many-to-one) atau membuat <em>looping</em>, gunakan <code>-&gt;id["..."]</code> dan <code>-&gt;goto["..."]</code>.
+    </p>
+
+    <CodeBlock language="mermaid" :code="graphSyntax" />
+    <LiveDiagram :code="graphSyntax" />
+
+    <p class="tip">
+      <strong>Catatan Layout:</strong> Panah <code>goto</code> yang mundur (loop) akan digambar dengan garis putus-putus yang melingkari diagram agar tidak menabrak node lain.
+    </p>
+
+    <!-- =========================================================
+         4. LABEL PADA PANAH
+         ========================================================= -->
+    <h2>4. Label pada Panah</h2>
     <p>
       Ganti <code>-&gt;node</code> di akhir baris dengan <code>-- label --&gt;</code> untuk
       memberi teks label di tengah panah. Bekerja juga di dalam sub-cabang.
@@ -109,77 +114,21 @@
     <CodeBlock language="mermaid" :code="edgeLabelSyntax" />
     <LiveDiagram :code="edgeLabelSyntax" />
 
-    <p class="tip">
-      <strong>Kombinasi dengan cabang:</strong> label edge di sisi
-      <code>-&gt;ya["Ya"]-- lanjut --&gt;</code> akan muncul di panah yang menuju sub-node
-      pertama di bawahnya.
-    </p>
-
-    <CodeBlock language="mermaid" :code="edgeLabelBranchSyntax" />
-    <LiveDiagram :code="edgeLabelBranchSyntax" />
-
     <!-- =========================================================
-         5. RICH TEXT
+         5. RICH TEXT & WARNA
          ========================================================= -->
-    <h2>5. Rich Text</h2>
+    <h2>5. Rich Text &amp; Warna</h2>
     <p>
-      Label node mendukung format Markdown-lite: <strong>Tebal</strong> (<code>**teks**</code>),
-      <em>Miring</em> (<code>*teks*</code>), dan <code>Kode</code> (<code>`teks`</code>).
-      Gunakan <code>\n</code> untuk baris baru di dalam satu label.
+      Label mendukung format Markdown-lite: <strong>Tebal</strong> (<code>**teks**</code>),
+      <em>Miring</em> (<code>*teks*</code>), dan <code>Kode</code>.
+      Tambahkan titik dua dan nama warna (CSS name atau hex) di dalam kurung bentuk.
     </p>
 
     <CodeBlock language="mermaid" :code="richText" />
     <LiveDiagram :code="richText" />
 
     <!-- =========================================================
-         6. WARNA KUSTOM
-         ========================================================= -->
-    <h2>6. Warna Kustom</h2>
-    <p>
-      Tambahkan titik dua dan nama warna (CSS name, hex, atau rgb) di dalam kurung bentuk.
-    </p>
-
-    <CodeBlock language="mermaid" :code="customColors" />
-    <LiveDiagram :code="customColors" />
-
-    <!-- =========================================================
-         7. NODE INTERAKTIF
-         ========================================================= -->
-    <h2>7. Node Interaktif (Link &amp; Tooltip)</h2>
-    <p>
-      Jadikan node bisa diklik dengan <code>-&gt;link["url"]</code>, dan tampilkan pesan hover
-      dengan <code>-&gt;tooltip["pesan"]</code>. Keduanya di-render sebagai elemen SVG native.
-    </p>
-
-    <CodeBlock language="mermaid" :code="interactive" />
-    <LiveDiagram :code="interactive" />
-
-    <!-- =========================================================
-         8. GROUPING
-         ========================================================= -->
-    <h2>8. Grouping (Kotak Pembungkus)</h2>
-    <p>
-      Kelompokkan beberapa node dalam satu kotak berlabel. Berguna untuk menandai subsystem
-      atau blok logika. Group otomatis mengelilingi semua node di dalam indentasinya.
-    </p>
-
-    <CodeBlock language="mermaid" :code="groupSyntax" />
-    <LiveDiagram :code="groupSyntax" />
-
-    <!-- =========================================================
-         9. ARAH HORIZONTAL
-         ========================================================= -->
-    <h2>9. Arah Horizontal</h2>
-    <p>
-      Tambahkan <code>[horizontal]</code> di baris paling atas untuk layout kiri-ke-kanan.
-      Default: vertikal (atas-ke-bawah).
-    </p>
-
-    <CodeBlock language="mermaid" :code="horizontalSyntax" />
-    <LiveDiagram :code="horizontalSyntax" />
-
-    <!-- =========================================================
-         10. NEXT STEPS
+         NEXT STEPS
          ========================================================= -->
     <div class="next-steps">
       <h3>Selanjutnya</h3>
@@ -205,222 +154,75 @@
 import CodeBlock from '../components/CodeBlock.vue';
 import LiveDiagram from '../components/LiveDiagram.vue';
 
-/* =========================================================
-   SHAPES REFERENCE
-   ========================================================= */
-const shapes = [
-  { name: 'square',       aliasEn: 'rect, box',       aliasId: 'kotak, persegi',    use: 'Proses / langkah' },
-  { name: 'round',        aliasEn: 'rounded, stadium',aliasId: 'kapsul',            use: 'Mulai / selesai' },
-  { name: 'diamond',      aliasEn: 'decision, rhombus',aliasId: 'belahketupat, belah', use: 'Keputusan (ya/tidak)' },
-  { name: 'circle',       aliasEn: '—',               aliasId: 'lingkaran, bulat',  use: 'Titik koneksi' },
-  { name: 'ellipse',      aliasEn: 'oval',            aliasId: 'elips',             use: 'Koneksi / status' },
-  { name: 'triangle',     aliasEn: '—',               aliasId: 'segitiga',          use: 'Selesai / akhir' },
-  { name: 'hexagon',      aliasEn: '—',               aliasId: 'segienam',          use: 'Persiapan / setup' },
-  { name: 'parallelogram',aliasEn: '—',               aliasId: 'jajargenjang',      use: 'Input / output' },
-  { name: 'cylinder',     aliasEn: 'database, db',    aliasId: 'silinder',          use: 'Database / storage' },
-  { name: 'document',     aliasEn: 'doc',             aliasId: 'dokumen',           use: 'Dokumen / laporan' },
-];
-
-/* =========================================================
-   SYNTAX SNIPPETS
-   ========================================================= */
 const basicSyntax = `->[round]->text["Mulai"]->node
 ->[square]->text["Proses Data"]->node
-->[diamond]->text["Valid?"]->node
-->[triangle]->text["Selesai"]`;
+->[diamond]->text["Valid?"]`;
 
-const nestedSyntax = `[cabang]->[diamond]->text["Login?"]
+const nestedSyntax = `[cabang]->[diamond]->text["Pilih Metode Pembayaran?"]
+  ->kartu["Kartu Kredit"]
+    ->[square]->text["Form Kartu"]
+  ->transfer["Transfer Bank"]
+    ->[square]->text["Instruksi Transfer"]
+  ->ewallet["E-Wallet"]
+    ->[square]->text["Scan QR"]`;
+
+const graphSyntax = `->[round]->id["mulai"]->text["Mulai"]->node
+->[diamond]->text["Login?"]->node
+[cabang]->[diamond]->text["Valid?"]
   ->ya["Ya"]
-    ->[square]->text["Dashboard"]
+    ->[square:green]->text["Dashboard"]->goto["selesai"]
   ->tidak["Tidak"]
-    ->[square]->text["Halaman Login"]`;
+    ->[square:red]->text["Gagal"]->goto["mulai"]
+->[round:green]->id["selesai"]->text["Selesai"]`;
 
 const edgeLabelSyntax = `->[round]->text["Mulai"]-- mulai -->
 ->[square]->text["Proses"]-- selesai -->
-->[diamond]->text["Sukses?"]-- ya -->
-->[triangle]->text["Deploy"]`;
-
-const edgeLabelBranchSyntax = `[cabang]->[diamond]->text["Pembayaran?"]
-  ->ya["Lunas"]-- lanjut -->
-    ->[square]->text["Kirim Barang"]
-  ->tidak["Gagal"]-- ulangi -->
-    ->[square]->text["Halaman Bayar"]`;
-
-const richText = `->[round]->text["Status: **AKTIF**"]->node
-->[diamond]->text["Cek *Koneksi*\\nDatabase?"]->node
-->[square]->text["Ping \`192.168.1.1\`"]`;
-
-const customColors = `->[round:green]->text["Sukses"]->node
-->[square:red]->text["Error"]->node
-->[diamond:#ff5722]->text["Peringatan"]->node
-->[hexagon:purple]->text["Proses"]`;
-
-const interactive = `->[square]->text["Google"]
-  ->link["https://google.com"]
-  ->tooltip["Buka mesin pencari"]->node
-->[square]->text["Kembali ke Beranda"]
-  ->link["/"]`;
-
-const groupSyntax = `[group "Sistem Database"]
-  ->[cylinder]->icon["database"]->text["PostgreSQL"]
-  ->[cylinder]->text["Redis Cache"]`;
-
-const horizontalSyntax = `[horizontal]
-->[round]->text["Mulai"]->node
-->[square]->text["Validasi"]->node
-->[diamond]->text["OK?"]->node
 ->[triangle]->text["Selesai"]`;
+
+const richText = `->[round:green]->text["Status: **AKTIF**"]->node
+->[diamond:red]->text["Cek *Koneksi*\\nDatabase?"]->node
+->[square:blue]->text["Ping \`192.168.1.1\`"]`;
 </script>
 
 <style scoped>
-/* =========================================================
-   QUICK REFERENCE
-   ========================================================= */
-.quick-ref {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 8px;
-  padding: 14px;
-  margin: 20px 0 32px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+/* Tambahan style untuk Alert Warning */
+.alert-warning {
+  background: rgba(210, 153, 34, 0.1);
+  border-left: 4px solid #d29922;
+  padding: 16px 20px;
+  border-radius: 6px;
+  margin-bottom: 24px;
 }
-
-.qr-item {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  padding: 8px 10px;
-  border-radius: var(--radius-sm);
-  background: var(--bg-elevated);
-  border: 1px solid var(--border-subtle);
+.alert-warning h3 {
+  margin-top: 0;
+  color: #d29922;
+  font-size: 16px;
 }
-.qr-item code {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--accent);
-  background: transparent;
-  border: 0;
-  padding: 0;
-  white-space: nowrap;
+.alert-warning ul {
+  margin-bottom: 0;
+  padding-left: 20px;
 }
-.qr-item span {
-  font-size: 11.5px;
-  color: var(--muted);
-}
-
-/* =========================================================
-   BADGE NEW
-   ========================================================= */
-.badge-new {
-  display: inline-flex;
-  align-items: center;
-  background: rgba(63, 185, 80, 0.12);
-  color: var(--success);
-  border: 1px solid rgba(63, 185, 80, 0.35);
-  padding: 1px 8px;
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  vertical-align: middle;
-  margin-left: 6px;
-}
-
-/* =========================================================
-   TIP
-   ========================================================= */
-.tip {
-  padding: 12px 16px;
-  background: var(--accent-soft);
-  border-left: 3px solid var(--accent);
-  border-radius: var(--radius-sm);
-  font-size: 13.5px;
+.alert-warning li {
+  margin-bottom: 8px;
   color: var(--text);
-  margin: 16px 0 20px;
 }
+
+/* Style lainnya sama seperti sebelumnya... */
+.quick-ref { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; padding: 14px; margin: 20px 0 32px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); }
+.qr-item { display: flex; flex-direction: column; gap: 3px; padding: 8px 10px; border-radius: var(--radius-sm); background: var(--bg-elevated); border: 1px solid var(--border-subtle); }
+.qr-item code { font-size: 11.5px; font-weight: 600; color: var(--accent); background: transparent; border: 0; padding: 0; white-space: nowrap; }
+.qr-item span { font-size: 11.5px; color: var(--muted); }
+.badge-new { display: inline-flex; align-items: center; background: rgba(63, 185, 80, 0.12); color: var(--success); border: 1px solid rgba(63, 185, 80, 0.35); padding: 1px 8px; border-radius: 999px; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; vertical-align: middle; margin-left: 6px; }
+.tip { padding: 12px 16px; background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: var(--radius-sm); font-size: 13.5px; color: var(--text); margin: 16px 0 20px; }
 .tip strong { color: var(--accent); }
-.tip code {
-  background: var(--panel);
-  border: 1px solid var(--border);
-}
-
-/* =========================================================
-   TABLE
-   ========================================================= */
-table {
-  margin: 16px 0 20px;
-}
-table td.muted {
-  color: var(--muted);
-  font-size: 13px;
-}
-
-/* =========================================================
-   NEXT STEPS
-   ========================================================= */
-.next-steps {
-  margin-top: 56px;
-  padding-top: 32px;
-  border-top: 1px solid var(--border-subtle);
-}
-.next-steps h3 {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  margin: 0 0 16px;
-}
-
-.next-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-}
-
-.next-card {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  padding: 14px 16px;
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  text-decoration: none;
-  transition: border-color var(--t-fast), transform var(--t-fast), background var(--t-fast);
-}
-.next-card:hover {
-  border-color: var(--accent-border);
-  background: var(--panel-2);
-  transform: translateY(-1px);
-  text-decoration: none;
-}
-.next-card strong {
-  font-size: 14px;
-  color: var(--accent);
-  font-weight: 600;
-}
-.next-card span {
-  font-size: 12.5px;
-  color: var(--muted);
-}
-
-/* =========================================================
-   RESPONSIVE
-   ========================================================= */
-@media (max-width: 900px) {
-  .quick-ref {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-  }
-}
-@media (max-width: 600px) {
-  .quick-ref {
-    grid-template-columns: 1fr 1fr;
-  }
-  .next-grid {
-    grid-template-columns: 1fr;
-  }
-}
+.tip pre { margin-top: 8px; margin-bottom: 0; padding: 8px; background: var(--bg); border: 1px solid var(--border); }
+.tip code { background: transparent; border: 0; padding: 0; color: #c9d1d9; }
+.next-steps { margin-top: 56px; padding-top: 32px; border-top: 1px solid var(--border-subtle); }
+.next-steps h3 { font-size: 14px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 0 0 16px; }
+.next-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.next-card { display: flex; flex-direction: column; gap: 4px; padding: 14px 16px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); text-decoration: none; transition: border-color var(--t-fast), transform var(--t-fast), background var(--t-fast); }
+.next-card:hover { border-color: var(--accent-border); background: var(--panel-2); transform: translateY(-1px); text-decoration: none; }
+.next-card strong { font-size: 14px; color: var(--accent); font-weight: 600; }
+.next-card span { font-size: 12.5px; color: var(--muted); }
+@media (max-width: 600px) { .quick-ref { grid-template-columns: 1fr 1fr; } .next-grid { grid-template-columns: 1fr; } }
 </style>
